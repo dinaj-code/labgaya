@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Maya Sains - Gaya dan Gerak</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Dynamic Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts Inter & Fredoka for Kid-Friendly UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            user-select: none;
+        }
+        .font-display {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
+        }
+        .glow-amber {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* Pulse Animation for interactive callouts */
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-btn {
+            animation: subtle-pulse 2.5s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden bg-slate-950 text-slate-100">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchSection('beranda')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xl shadow-lg glow-cyan">
+                    <i class="fa-solid font-bold fa-flask"></i>
+                </div>
+                <div>
+                    <h1 class="font-display text-lg md:text-xl font-bold tracking-wide text-cyan-400">LAB MAYA SAINS</h1>
+                    <p class="text-xs text-slate-400">Modul Gaya & Gerak • SD Kelas 5–6</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 text-xs font-semibold">
+                <button onclick="switchSection('beranda')" id="nav-beranda" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-cyan-400 bg-slate-800">
+                    <i class="fa-solid fa-house mr-1"></i> Beranda
+                </button>
+                <button onclick="switchSection('exp1')" id="nav-exp1" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-bolt mr-1"></i> Exp 1: Gaya
+                </button>
+                <button onclick="switchSection('exp2')" id="nav-exp2" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-weight-hanging mr-1"></i> Exp 2: Massa
+                </button>
+                <button onclick="switchSection('exp3')" id="nav-exp3" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-scale-balanced mr-1"></i> Exp 3: Bandingkan
+                </button>
+                <button onclick="switchSection('lab-bebas')" id="nav-lab-bebas" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-sliders mr-1"></i> Lab Bebas
+                </button>
+                <button onclick="switchSection('misi-sains')" id="nav-misi-sains" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-cart-flatbed mr-1"></i> Misi Sains
+                </button>
+                <button onclick="switchSection('jurnal')" id="nav-jurnal" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-book-bookmark mr-1"></i> Jurnal
+                </button>
+                <button onclick="switchSection('temuan')" id="nav-temuan" class="nav-btn px-3 py-1.5 rounded-xl transition-all text-slate-400 hover:text-cyan-300">
+                    <i class="fa-solid fa-lightbulb mr-1"></i> Temuan
+                </button>
+            </nav>
+
+            <!-- Mobile Navigation Toggle -->
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 text-slate-300 hover:text-white focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden mt-3 pt-3 border-t border-slate-800 grid grid-cols-2 gap-2 text-xs font-semibold">
+            <button onclick="switchSection('beranda'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-house text-cyan-400 mr-2"></i>Beranda</button>
+            <button onclick="switchSection('exp1'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Exp 1: Gaya</button>
+            <button onclick="switchSection('exp2'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-weight-hanging text-emerald-400 mr-2"></i>Exp 2: Massa</button>
+            <button onclick="switchSection('exp3'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-scale-balanced text-purple-400 mr-2"></i>Exp 3: Bandingkan</button>
+            <button onclick="switchSection('lab-bebas'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-sliders text-blue-400 mr-2"></i>Lab Bebas</button>
+            <button onclick="switchSection('misi-sains'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-cart-flatbed text-orange-400 mr-2"></i>Misi Sains</button>
+            <button onclick="switchSection('jurnal'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-book-bookmark text-pink-400 mr-2"></i>Jurnal</button>
+            <button onclick="switchSection('temuan'); toggleMobileMenu()" class="p-2 bg-slate-800 text-left rounded-lg"><i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i>Temuan</button>
+        </div>
+    </header>
+
+    <!-- Custom Toast Notification Box -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full">
+
+        <!-- SECTION: BERANDA -->
+        <section id="sec-beranda" class="section-block space-y-8 py-4">
+            <div class="relative rounded-3xl p-8 md:p-12 glass-panel overflow-hidden border border-cyan-500/20 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900">
+                <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-2xl space-y-6">
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
+                        <i class="fa-solid fa-atom animate-spin"></i>
+                        <span>Eksperimen Interaktif IPA SD</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                        🔬 LAB MAYA SAINS
+                        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mt-2">
+                            Gaya dan Gerak
+                        </span>
+                    </h1>
+
+                    <p class="text-slate-300 text-lg leading-relaxed font-medium">
+                        “Bisakah kamu membuat benda bergerak lebih cepat? Mari membuktikannya melalui penyelidikan sains!”
+                    </p>
+
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="switchSection('exp1')" class="pulse-btn px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold shadow-lg glow-cyan flex items-center space-x-3 transition-all transform hover:-translate-y-0.5">
+                            <i class="fa-solid fa-rocket text-lg"></i>
+                            <span>MULAI EKSPERIMEN</span>
+                        </button>
+
+                        <button onclick="switchSection('misi-sains')" class="px-6 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold border border-amber-500/30 flex items-center space-x-3 transition-all">
+                            <i class="fa-solid fa-bullseye text-lg text-amber-400"></i>
+                            <span>MISI SAINS</span>
+                        </button>
+
+                        <button onclick="switchSection('jurnal')" class="px-6 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold border border-slate-700 flex items-center space-x-3 transition-all">
+                            <i class="fa-solid fa-book-open-reader text-lg text-cyan-400"></i>
+                            <span>JURNAL ILMUWAN</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Quick Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div onclick="switchSection('exp1')" class="glass-panel p-6 rounded-2xl hover:border-cyan-500/40 transition-all cursor-pointer group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Eksperimen 1: Besar Gaya</h3>
+                    <p class="text-sm text-slate-400">Amati bagaimana dorongan yang semakin kuat memengaruhi percepatan balok.</p>
+                </div>
+
+                <div onclick="switchSection('exp2')" class="glass-panel p-6 rounded-2xl hover:border-emerald-500/40 transition-all cursor-pointer group">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-weight-hanging"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Eksperimen 2: Massa Benda</h3>
+                    <p class="text-sm text-slate-400">Uji benda ringan dan berat dengan gaya yang sama. Mana yang lebih cepat?</p>
+                </div>
+
+                <div onclick="switchSection('exp3')" class="glass-panel p-6 rounded-2xl hover:border-purple-500/40 transition-all cursor-pointer group">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Eksperimen 3: Adul Balok</h3>
+                    <p class="text-sm text-slate-400">Jalankan 2 balok bermassa beda secara bersamaan di dua lintasan berdampingan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: EKSPERIMEN 1 -->
+        <section id="sec-exp1" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-cyan-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider">
+                            🧪 EKSPERIMEN 1
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            “Dorongan Lebih Kuat, Geraknya Bagaimana?”
+                        </h2>
+                    </div>
+                    <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 text-xs text-slate-300">
+                        Variabel Tetap: <span class="font-bold text-cyan-400">Massa = 2 kg</span>
+                    </div>
+                </div>
+
+                <!-- Prediction Box -->
+                <div class="glass-card p-4 rounded-2xl border-l-4 border-l-cyan-400 mb-6 space-y-3">
+                    <p class="font-semibold text-cyan-200 text-sm flex items-center">
+                        <i class="fa-solid fa-circle-question mr-2 text-cyan-400"></i> PERTANYAAN PREDIKSI:
+                    </p>
+                    <p class="text-slate-200 text-base">
+                        Jika massa benda tetap (2 kg), apa yang terjadi jika gaya dorong yang diberikan semakin besar?
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm pt-2" id="exp1-predict-options">
+                        <button onclick="setPrediction('exp1', 0, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Benda bergerak lebih lambat
+                        </button>
+                        <button onclick="setPrediction('exp1', 1, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Benda bergerak lebih cepat
+                        </button>
+                        <button onclick="setPrediction('exp1', 2, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Benda tidak bergerak sama sekali
+                        </button>
+                        <button onclick="setPrediction('exp1', 3, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Tidak ada perubahan gerak
+                        </button>
+                    </div>
+                    <div id="exp1-pred-feedback" class="hidden p-3 rounded-xl bg-slate-900/90 text-sm font-medium border border-cyan-500/30"></div>
+                </div>
+
+                <!-- Simulation & Controls Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Simulation Canvas Viewport -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="glass-card rounded-2xl p-4 relative overflow-hidden">
+                            <div class="flex justify-between items-center mb-2 text-xs text-slate-400 font-semibold">
+                                <span><i class="fa-solid fa-road mr-1"></i> LINTASAN EKSPERIMEN (0m — 5m)</span>
+                                <span id="exp1-sim-status" class="text-cyan-400"><i class="fa-solid fa-circle text-[10px] mr-1"></i>Siap</span>
+                            </div>
+
+                            <div class="relative w-full h-48 bg-slate-900 rounded-xl overflow-hidden border border-slate-800">
+                                <canvas id="canvas-exp1" class="w-full h-full block"></canvas>
+                            </div>
+
+                            <!-- Real-time Metrics Readout -->
+                            <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4 text-center">
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Massa (m)</div>
+                                    <div class="font-display font-bold text-cyan-400 text-base" id="exp1-read-m">2 kg</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Gaya (F)</div>
+                                    <div class="font-display font-bold text-amber-400 text-base" id="exp1-read-f">2 N</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Percepatan (a)</div>
+                                    <div class="font-display font-bold text-emerald-400 text-base" id="exp1-read-a">1.0 m/s²</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Kecepatan (v)</div>
+                                    <div class="font-display font-bold text-blue-400 text-base" id="exp1-read-v">0.0 m/s</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Jarak (s)</div>
+                                    <div class="font-display font-bold text-purple-400 text-base" id="exp1-read-s">0.00 m</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Waktu (t)</div>
+                                    <div class="font-display font-bold text-pink-400 text-base" id="exp1-read-t">0.0 s</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Control Panel -->
+                    <div class="glass-card p-5 rounded-2xl space-y-5 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-lg text-white mb-4 border-b border-slate-800 pb-2 flex items-center">
+                                <i class="fa-solid fa-sliders text-cyan-400 mr-2"></i> ⚙️ ATUR GAYA
+                            </h3>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm font-semibold mb-2">
+                                        <span class="text-slate-300">Besar Gaya (F):</span>
+                                        <span class="text-amber-400 font-bold" id="exp1-slider-val">2 N</span>
+                                    </div>
+                                    <input type="range" id="exp1-force-input" min="2" max="8" step="2" value="2" oninput="updateExp1Controls()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                                    <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                                        <span>2 N</span>
+                                        <span>4 N</span>
+                                        <span>6 N</span>
+                                        <span>8 N</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-1">
+                                    <div class="flex justify-between"><span>Massa Benda (m):</span> <strong class="text-cyan-400">2 kg (Tetap)</strong></div>
+                                    <div class="flex justify-between"><span>Kecepatan Awal (v₀):</span> <strong class="text-blue-400">0 m/s</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-4 border-t border-slate-800">
+                            <button onclick="runExp1Sim()" id="btn-exp1-run" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold shadow-lg flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-play"></i>
+                                <span>▶ MULAI PERCOBAAN</span>
+                            </button>
+
+                            <button onclick="resetExp1Sim()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                <span>↺ RESET</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table & Chart Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                    <!-- Table -->
+                    <div class="glass-card p-5 rounded-2xl">
+                        <h3 class="font-display font-bold text-lg text-white mb-3 flex items-center">
+                            <i class="fa-solid fa-table-list text-cyan-400 mr-2"></i> Tabel Data Hasil Percobaan
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-xs uppercase bg-slate-900/80 text-cyan-300 border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-2.5">Percobaan</th>
+                                        <th class="p-2.5">Massa</th>
+                                        <th class="p-2.5">Gaya</th>
+                                        <th class="p-2.5">Percepatan</th>
+                                        <th class="p-2.5">Kecepatan (t=3s)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exp1-table-body" class="divide-y divide-slate-800 font-medium">
+                                    <tr class="text-slate-500 italic"><td colspan="5" class="p-4 text-center">Lakukan percobaan untuk mencatat data secara otomatis.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between">
+                        <h3 class="font-display font-bold text-lg text-white mb-3 flex items-center">
+                            <i class="fa-solid fa-chart-line text-emerald-400 mr-2"></i> Grafik: Besar Gaya vs Percepatan
+                        </h3>
+                        <div class="relative w-full h-56">
+                            <canvas id="chart-exp1"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Prompt -->
+                <div class="glass-card p-5 rounded-2xl border border-amber-500/20 space-y-3">
+                    <h4 class="font-display font-bold text-amber-300 text-base flex items-center">
+                        <i class="fa-solid fa-magnifying-glass-chart mr-2"></i> Pertanyaan Analisis:
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        Berdasarkan data tabel dan grafik di atas, apa yang terjadi pada percepatan benda ketika gaya yang diberikan semakin besar?
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="checkExp1Analysis(true)" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-emerald-900/50 border border-slate-700 text-sm font-medium transition">
+                            Percepatan semakin BESAR (Benda lebih cepat bertambah kecepatan)
+                        </button>
+                        <button onclick="checkExp1Analysis(false)" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-rose-900/50 border border-slate-700 text-sm font-medium transition">
+                            Percepatan semakin KECIL (Benda menjadi lebih lambat)
+                        </button>
+                    </div>
+                    <div id="exp1-analysis-feedback" class="hidden p-3 rounded-xl bg-slate-900 text-sm border border-emerald-500/40 text-emerald-300"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: EKSPERIMEN 2 -->
+        <section id="sec-exp2" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-emerald-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                            🧪 EKSPERIMEN 2
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            “Benda Mana yang Lebih Mudah Digerakkan?”
+                        </h2>
+                    </div>
+                    <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 text-xs text-slate-300">
+                        Variabel Tetap: <span class="font-bold text-amber-400">Gaya = 6 N</span>
+                    </div>
+                </div>
+
+                <!-- Prediction Box -->
+                <div class="glass-card p-4 rounded-2xl border-l-4 border-l-emerald-400 mb-6 space-y-3">
+                    <p class="font-semibold text-emerald-200 text-sm flex items-center">
+                        <i class="fa-solid fa-circle-question mr-2 text-emerald-400"></i> PERTANYAAN PREDIKSI:
+                    </p>
+                    <p class="text-slate-200 text-base">
+                        Jika gaya dorong yang diberikan sama (6 N), apakah benda yang lebih berat (massa lebih besar) mengalami perubahan gerak yang sama dengan benda ringan?
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm pt-2">
+                        <button onclick="setPrediction('exp2', 0, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Benda berat lebih SUSAH dipercepat (percepatan lebih kecil)
+                        </button>
+                        <button onclick="setPrediction('exp2', 1, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Benda berat bergerak SAMA CEPAT dengan benda ringan
+                        </button>
+                        <button onclick="setPrediction('exp2', 2, this)" class="pred-opt text-left p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition">
+                            ⚪ Benda berat bergerak LEBIH CEPAT dari benda ringan
+                        </button>
+                    </div>
+                    <div id="exp2-pred-feedback" class="hidden p-3 rounded-xl bg-slate-900/90 text-sm font-medium border border-emerald-500/30"></div>
+                </div>
+
+                <!-- Sim & Control Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="glass-card rounded-2xl p-4 relative overflow-hidden">
+                            <div class="flex justify-between items-center mb-2 text-xs text-slate-400 font-semibold">
+                                <span><i class="fa-solid fa-road mr-1"></i> LINTASAN EKSPERIMEN MASSA</span>
+                                <span id="exp2-sim-status" class="text-emerald-400"><i class="fa-solid fa-circle text-[10px] mr-1"></i>Siap</span>
+                            </div>
+
+                            <div class="relative w-full h-48 bg-slate-900 rounded-xl overflow-hidden border border-slate-800">
+                                <canvas id="canvas-exp2" class="w-full h-full block"></canvas>
+                            </div>
+
+                            <!-- Readouts -->
+                            <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4 text-center">
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Massa (m)</div>
+                                    <div class="font-display font-bold text-cyan-400 text-base" id="exp2-read-m">1 kg</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Gaya (F)</div>
+                                    <div class="font-display font-bold text-amber-400 text-base" id="exp2-read-f">6 N</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Percepatan (a)</div>
+                                    <div class="font-display font-bold text-emerald-400 text-base" id="exp2-read-a">6.0 m/s²</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Kecepatan (v)</div>
+                                    <div class="font-display font-bold text-blue-400 text-base" id="exp2-read-v">0.0 m/s</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Jarak (s)</div>
+                                    <div class="font-display font-bold text-purple-400 text-base" id="exp2-read-s">0.00 m</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] uppercase text-slate-400 font-bold">Waktu (t)</div>
+                                    <div class="font-display font-bold text-pink-400 text-base" id="exp2-read-t">0.0 s</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Control -->
+                    <div class="glass-card p-5 rounded-2xl space-y-5 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-lg text-white mb-4 border-b border-slate-800 pb-2 flex items-center">
+                                <i class="fa-solid fa-sliders text-emerald-400 mr-2"></i> ⚙️ ATUR MASSA
+                            </h3>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm font-semibold mb-2">
+                                        <span class="text-slate-300">Massa Benda (m):</span>
+                                        <span class="text-cyan-400 font-bold" id="exp2-slider-val">1 kg</span>
+                                    </div>
+                                    <input type="range" id="exp2-mass-input" min="1" max="5" step="1" value="1" oninput="updateExp2Controls()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                                    <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                                        <span>1 kg</span>
+                                        <span>2 kg</span>
+                                        <span>3 kg</span>
+                                        <span>4 kg</span>
+                                        <span>5 kg</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-1">
+                                    <div class="flex justify-between"><span>Besar Gaya (F):</span> <strong class="text-amber-400">6 N (Tetap)</strong></div>
+                                    <div class="flex justify-between"><span>Kecepatan Awal (v₀):</span> <strong class="text-blue-400">0 m/s</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-4 border-t border-slate-800">
+                            <button onclick="runExp2Sim()" id="btn-exp2-run" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold shadow-lg flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-play"></i>
+                                <span>▶ MULAI PERCOBAAN</span>
+                            </button>
+
+                            <button onclick="resetExp2Sim()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                <span>↺ RESET</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table & Chart -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                    <div class="glass-card p-5 rounded-2xl">
+                        <h3 class="font-display font-bold text-lg text-white mb-3 flex items-center">
+                            <i class="fa-solid fa-table-list text-emerald-400 mr-2"></i> Tabel Hasil Percobaan Massa
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-xs uppercase bg-slate-900/80 text-emerald-300 border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-2.5">Percobaan</th>
+                                        <th class="p-2.5">Gaya</th>
+                                        <th class="p-2.5">Massa</th>
+                                        <th class="p-2.5">Percepatan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exp2-table-body" class="divide-y divide-slate-800 font-medium">
+                                    <tr class="text-slate-500 italic"><td colspan="4" class="p-4 text-center">Jalankan eksperimen untuk merekam data.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between">
+                        <h3 class="font-display font-bold text-lg text-white mb-3 flex items-center">
+                            <i class="fa-solid fa-chart-bar text-cyan-400 mr-2"></i> Grafik: Massa vs Percepatan
+                        </h3>
+                        <div class="relative w-full h-56">
+                            <canvas id="chart-exp2"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Prompt -->
+                <div class="glass-card p-5 rounded-2xl border border-cyan-500/20 space-y-3">
+                    <h4 class="font-display font-bold text-cyan-300 text-base flex items-center">
+                        <i class="fa-solid fa-magnifying-glass-chart mr-2"></i> Pertanyaan Analisis:
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        Ketika massa benda bertambah (semakin berat), apa yang terjadi pada percepatannya jika diberikan gaya yang sama?
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="checkExp2Analysis(true)" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-emerald-900/50 border border-slate-700 text-sm font-medium transition">
+                            Percepatan semakin KECIL (Benda semakin berat sulit mengalami perubahan kecepatan)
+                        </button>
+                        <button onclick="checkExp2Analysis(false)" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-rose-900/50 border border-slate-700 text-sm font-medium transition">
+                            Percepatan semakin BESAR (Benda semakin berat semakin melesat)
+                        </button>
+                    </div>
+                    <div id="exp2-analysis-feedback" class="hidden p-3 rounded-xl bg-slate-900 text-sm border border-emerald-500/40 text-emerald-300"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: EKSPERIMEN 3 -->
+        <section id="sec-exp3" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-purple-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold uppercase tracking-wider">
+                            🧪 EKSPERIMEN 3
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            “Bandingkan Dua Benda Secara Bersamaan”
+                        </h2>
+                    </div>
+                    <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 text-xs text-slate-300">
+                        Gaya Dorong Sama: <span class="font-bold text-amber-400">4 N</span>
+                    </div>
+                </div>
+
+                <p class="text-slate-300 text-sm">
+                    Amati dua lintasan di bawah ini secara langsung! Lintasan A memiliki balok ringan (1 kg), sedangkan Lintasan B memiliki balok lebih berat (4 kg).
+                </p>
+
+                <!-- Dual Track Canvas Wrapper -->
+                <div class="glass-card p-5 rounded-2xl space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold">
+                        <div class="flex items-center space-x-2 text-cyan-400 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fa-solid fa-cube"></i>
+                            <span>Lintasan A: Massa = 1 kg | Gaya = 4 N (a = 4 m/s²)</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-purple-400 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fa-solid fa-cubes"></i>
+                            <span>Lintasan B: Massa = 4 kg | Gaya = 4 N (a = 1 m/s²)</span>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full h-80 bg-slate-900 rounded-xl overflow-hidden border border-slate-800">
+                        <canvas id="canvas-exp3" class="w-full h-full block"></canvas>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                        <button onclick="runExp3Sim()" id="btn-exp3-run" class="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold shadow-lg glow-purple flex items-center space-x-2 transition">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ UJI BERSAMA</span>
+                        </button>
+                        <button onclick="resetExp3Sim()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 flex items-center space-x-2 transition">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>↺ RESET</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analysis Prompt -->
+                <div class="glass-card p-5 rounded-2xl space-y-3 border border-purple-500/30">
+                    <h4 class="font-display font-bold text-purple-300 text-base flex items-center">
+                        <i class="fa-solid fa-pen-to-square mr-2"></i> REFLEKSI EKSPERIMEN 3:
+                    </h4>
+                    <p class="text-sm text-slate-300">
+                        Mengapa kedua benda tidak mengalami perubahan gerak yang sama (balok A jauh lebih cepat dibanding balok B) meskipun gaya yang diberikan persis sama (4 N)?
+                    </p>
+                    <textarea id="exp3-reflection-input" rows="3" placeholder="Tuliskan pendapatmu di sini berdasarkan pengamatanmu..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200 focus:outline-none focus:border-purple-500"></textarea>
+                    <button onclick="saveExp3Reflection()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition">
+                        Simpan Refleksi ke Jurnal
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: LAB BEBAS -->
+        <section id="sec-lab-bebas" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-blue-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-2">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider">
+                            🧪 LAB BEBAS & TANTANGAN
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            “Eksplorasi Bebas Kombinasi Gaya & Massa”
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Mission Challenge Box -->
+                <div class="glass-card p-5 rounded-2xl border-2 border-amber-500/40 bg-gradient-to-r from-amber-950/30 to-slate-900 space-y-2">
+                    <div class="flex items-center space-x-2 text-amber-400 font-bold font-display text-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>🎯 MISI TANTANGAN KHUSUS</span>
+                    </div>
+                    <p class="text-slate-200 text-sm leading-relaxed">
+                        Bisakah kamu membuat benda bermassa <span class="text-cyan-400 font-bold">4 kg</span> mencapai kecepatan minimal <span class="text-emerald-400 font-bold">8 m/s</span> dalam waktu kurang dari <span class="text-pink-400 font-bold">4 detik</span>?
+                    </p>
+                    <p class="text-xs text-slate-400 italic">
+                        Petunjuk: Atur nilai Massa, Gaya, dan Kecepatan Awal lalu tekan MULAI!
+                    </p>
+                </div>
+
+                <!-- Simulation & Controls -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="glass-card rounded-2xl p-4">
+                            <div class="relative w-full h-48 bg-slate-900 rounded-xl overflow-hidden border border-slate-800">
+                                <canvas id="canvas-free" class="w-full h-full block"></canvas>
+                            </div>
+
+                            <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4 text-center">
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] text-slate-400 font-bold">Massa</div>
+                                    <div class="font-display font-bold text-cyan-400" id="free-read-m">1 kg</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] text-slate-400 font-bold">Gaya</div>
+                                    <div class="font-display font-bold text-amber-400" id="free-read-f">0 N</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] text-slate-400 font-bold">Kecepatan Awal</div>
+                                    <div class="font-display font-bold text-blue-400" id="free-read-v0">0 m/s</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] text-slate-400 font-bold">Percepatan</div>
+                                    <div class="font-display font-bold text-emerald-400" id="free-read-a">0.0 m/s²</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] text-slate-400 font-bold">Kecepatan (v)</div>
+                                    <div class="font-display font-bold text-purple-400" id="free-read-v">0.0 m/s</div>
+                                </div>
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <div class="text-[10px] text-slate-400 font-bold">Waktu (t)</div>
+                                    <div class="font-display font-bold text-pink-400" id="free-read-t">0.0 s</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Controls -->
+                    <div class="glass-card p-5 rounded-2xl space-y-4">
+                        <h3 class="font-display font-bold text-lg text-white border-b border-slate-800 pb-2">
+                            ⚙️ KONTROL VARIABEL
+                        </h3>
+
+                        <!-- Massa Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span>Massa (m):</span>
+                                <span id="free-m-val" class="text-cyan-400 font-bold">1 kg</span>
+                            </div>
+                            <input type="range" id="free-m-input" min="1" max="5" step="1" value="1" oninput="updateFreeControls()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+
+                        <!-- Gaya Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span>Besar Gaya (F):</span>
+                                <span id="free-f-val" class="text-amber-400 font-bold">4 N</span>
+                            </div>
+                            <input type="range" id="free-f-input" min="0" max="10" step="1" value="4" oninput="updateFreeControls()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                        </div>
+
+                        <!-- Kecepatan Awal Options -->
+                        <div>
+                            <label class="block text-xs font-semibold mb-2">Kecepatan Awal (v₀):</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setFreeV0(0, this)" class="free-v0-btn p-2 text-xs rounded-xl bg-blue-600 text-white font-bold border border-blue-400">0 m/s</button>
+                                <button onclick="setFreeV0(1, this)" class="free-v0-btn p-2 text-xs rounded-xl bg-slate-800 text-slate-300 font-medium border border-slate-700">1 m/s</button>
+                                <button onclick="setFreeV0(2, this)" class="free-v0-btn p-2 text-xs rounded-xl bg-slate-800 text-slate-300 font-medium border border-slate-700">2 m/s</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-2 border-t border-slate-800">
+                            <button onclick="runFreeSim()" id="btn-free-run" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold shadow-lg flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-play"></i>
+                                <span>▶ MULAI</span>
+                            </button>
+                            <button onclick="resetFreeSim()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                <span>↺ RESET</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Challenge Modal / Display -->
+                <div id="challenge-success-card" class="hidden glass-card p-6 rounded-2xl border-2 border-emerald-500 bg-emerald-950/40 glow-emerald space-y-4">
+                    <div class="flex items-center space-x-3 text-emerald-300 font-display font-bold text-2xl">
+                        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                        <span>🎉 EKSPERIMEN BERHASIL! TANTANGAN TERSELESAIKAN!</span>
+                    </div>
+                    <p class="text-sm text-slate-200">
+                        Luar biasa! Kamu berhasil membuat balok 4 kg mencapai kecepatan minimal 8 m/s dalam waktu di bawah 4 detik!
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm pt-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-emerald-200 mb-1">Kombinasi gaya dan massa apa yang kamu gunakan?</label>
+                            <input type="text" id="free-ans-combo" placeholder="Misal: Massa 4kg, Gaya 10N..." class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-emerald-200 mb-1">Mengapa kombinasi tersebut berhasil?</label>
+                            <input type="text" id="free-ans-reason" placeholder="Penjelasan singkatmu..." class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs">
+                        </div>
+                    </div>
+                    <button onclick="saveChallengeToJournal()" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition">
+                        Simpan Pencapaian ke Jurnal
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: MISI SAINS -->
+        <section id="sec-misi-sains" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-orange-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold uppercase tracking-wider">
+                            🕵️ MISI SAINS
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            “Mendorong Gerobak Sekolah”
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Story Scenario Card -->
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-l-orange-400 space-y-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-16 h-16 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-3xl shrink-0">
+                            <i class="fa-solid fa-cart-flatbed"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-display font-bold text-xl text-white">Studi Kasus Nyata di Sekolah</h3>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Di laboratorium sekolah terdapat dua gerobak. <strong>Gerobak A</strong> dalam keadaan kosong (massa ringan, 1 kg). <strong>Gerobak B</strong> berisi tumpukan buku pelajaran berat (massa 3 kg). Pak Guru meminta siswa mendorong keduanya menggunakan kekuatan gaya dorong yang persis sama. Menurutmu, apakah keduanya akan bergerak dengan cara yang sama?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Investigation Step -->
+                <div class="glass-card p-6 rounded-2xl space-y-5">
+                    <h4 class="font-display font-bold text-lg text-white flex items-center">
+                        <i class="fa-solid fa-clipboard-check text-orange-400 mr-2"></i> Langkah Penyelidikan
+                    </h4>
+
+                    <!-- Step 1: Prediction -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-amber-300">1. Tuliskan Prediksimu Sebelom Uji Coba:</label>
+                        <select id="misi-pred-select" class="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-200">
+                            <option value="">-- Pilih Prediksi --</option>
+                            <option value="A">Gerobak A (Kosong) akan melaju lebih cepat dibanding Gerobak B</option>
+                            <option value="B">Gerobak B (Buku) akan melaju lebih cepat dibanding Gerobak A</option>
+                            <option value="C">Kedua gerobak melaju dengan kecepatan yang sama persis</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 2: Simulation -->
+                    <div class="space-y-3 pt-2">
+                        <label class="block text-sm font-semibold text-cyan-300">2. Lakukan Uji Coba Dorong Gerobak:</label>
+                        <div class="relative w-full h-64 bg-slate-900 rounded-xl overflow-hidden border border-slate-800">
+                            <canvas id="canvas-misi" class="w-full h-full block"></canvas>
+                        </div>
+
+                        <div class="flex justify-center gap-3">
+                            <button onclick="runMisiSim()" id="btn-misi-run" class="px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold text-sm transition flex items-center space-x-2">
+                                <i class="fa-solid fa-play"></i>
+                                <span>▶ DORONG KEDUA GEROBAK (Gaya = 5 N)</span>
+                            </button>
+                            <button onclick="resetMisiSim()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition">
+                                ↺ Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Conclusion -->
+                    <div class="space-y-2 pt-2 border-t border-slate-800">
+                        <label class="block text-sm font-semibold text-emerald-300">3. Kesimpulan Hasil Penyelidikan Misi:</label>
+                        <textarea id="misi-conclusion-text" rows="3" placeholder="Tuliskan kesimpulanmu setelah melihat dorongan kedua gerobak..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200"></textarea>
+                        <button onclick="saveMisiToJournal()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
+                            Simpan Hasil Misi ke Jurnal Ilmuwan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: JURNAL ILMUWAN -->
+        <section id="sec-jurnal" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-pink-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 text-xs font-bold uppercase tracking-wider">
+                            📓 JURNAL ILMUWAN MUDA
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            Catatan & Laporan Eksperimen Saya
+                        </h2>
+                    </div>
+                    <button onclick="exportJournal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-pink-300 font-bold flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak / Salin Jurnal</span>
+                    </button>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nama Ilmuwan Muda:</label>
+                            <input type="text" id="journal-name" placeholder="Isi namamu..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 font-semibold focus:outline-none focus:border-pink-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Kelas / Tanggal:</label>
+                            <input type="text" id="journal-class" placeholder="Misal: Kelas 5A / 24 Oktober" class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-2">
+                        <div>
+                            <label class="block text-sm font-semibold text-cyan-300 mb-1"><i class="fa-solid fa-circle-question mr-1"></i> Pertanyaan Penyelidikan Saya:</label>
+                            <textarea id="jurnal-q" rows="2" placeholder="Apa yang ingin kamu ketahui dari gerak benda?" class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200">Bagaimana gaya dan massa benda memengaruhi kecepatan dan percepatan geraknya?</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-amber-300 mb-1"><i class="fa-solid fa-lightbulb mr-1"></i> Prediksi Awal Saya:</label>
+                            <textarea id="jurnal-pred" rows="2" placeholder="Apa dugaanmu sebelum mencoba..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-emerald-300 mb-1"><i class="fa-solid fa-vial mr-1"></i> Percobaan yang Saya Lakukan:</label>
+                            <textarea id="jurnal-exp" rows="2" placeholder="Rangkuman singkat aktivitas eksperimen..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200">Mengubah gaya dorong (2N-8N) pada balok 2kg, serta mengubah massa balok (1kg-5kg) dengan gaya 6N.</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-blue-300 mb-1"><i class="fa-solid fa-chart-pie mr-1"></i> Data & Pola yang Saya Temukan:</label>
+                            <textarea id="jurnal-data" rows="3" placeholder="Pola angka atau hubungan yang kamu amati..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-pink-300 mb-1"><i class="fa-solid fa-square-check mr-1"></i> Kesimpulan Akhir Saya:</label>
+                            <textarea id="jurnal-conc" rows="3" placeholder="Apa kesimpulan akhir yang kamu peroleh dari bukti eksperimen..." class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex justify-end">
+                        <button onclick="saveJournalLocal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-400 hover:to-rose-500 text-white font-bold text-sm shadow-lg flex items-center space-x-2 transition">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>SIMPAN JURNAL</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TEMUAN ILMUWAN -->
+        <section id="sec-temuan" class="section-block hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl border border-amber-500/20">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                            🔎 TEMUAN ILMUWAN
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-1">
+                            Rangkuman Konsep Sains Gaya & Gerak
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Concept Cards -->
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-cyan-400 space-y-2">
+                        <h3 class="font-display font-bold text-lg text-cyan-300 flex items-center">
+                            1. Gaya dan Gerak Benda
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Gaya adalah <strong>dorongan atau tarikan</strong>. Benda yang awalnya diam akan bergerak jika diberi gaya. Gaya juga dapat mempercepat, memperlambat, atau mengubah arah gerak benda.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-amber-400 space-y-2">
+                        <h3 class="font-display font-bold text-lg text-amber-300 flex items-center">
+                            2. Pengaruh Besar Gaya
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Jika massa benda tetap, <strong>semakin besar gaya dorong</strong> yang diberikan, <strong>semakin besar percepatannya</strong> (benda bergerak jauh lebih cepat bertambah kecepatan).
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-emerald-400 space-y-2">
+                        <h3 class="font-display font-bold text-lg text-emerald-300 flex items-center">
+                            3. Pengaruh Massa Benda
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Jika gaya dorong yang diberikan sama, <strong>benda dengan massa lebih besar (lebih berat)</strong> mengalami perubahan gerak yang <strong>lebih kecil (lebih lambat dipercepat)</strong> dibanding benda ringan.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border-l-4 border-l-purple-400 space-y-2">
+                        <h3 class="font-display font-bold text-lg text-purple-300 flex items-center">
+                            4. Hubungan Sederhana Fisika
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Secara matematis hubungan ketiganya dirumuskan:
+                        </p>
+                        <div class="bg-slate-900 p-3 rounded-xl text-center font-display text-xl font-bold text-amber-400 border border-slate-800">
+                            F = m × a &nbsp;&nbsp;atau&nbsp;&nbsp; a = F / m
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Triangle Visualizer -->
+                <div class="glass-card p-6 rounded-2xl text-center space-y-4">
+                    <h3 class="font-display font-bold text-lg text-white">
+                        📐 SEGITIGA AJAIB GAYA (F = m × a)
+                    </h3>
+                    <p class="text-xs text-slate-400">
+                        Klik salah satu besaran di bawah untuk melihat penjelasannya!
+                    </p>
+
+                    <div class="flex justify-center items-center py-4">
+                        <div class="relative w-64 h-56 flex flex-col items-center justify-center">
+                            <!-- Top F -->
+                            <button onclick="selectTriangleItem('F')" id="tri-F" class="w-24 h-20 bg-amber-500/20 hover:bg-amber-500/40 border-2 border-amber-400 rounded-t-3xl flex flex-col items-center justify-center transition cursor-pointer mb-1">
+                                <span class="font-display font-bold text-2xl text-amber-300">F</span>
+                                <span class="text-[10px] text-amber-200">Gaya (N)</span>
+                            </button>
+                            <!-- Bottom m & a -->
+                            <div class="flex space-x-1">
+                                <button onclick="selectTriangleItem('m')" id="tri-m" class="w-28 h-20 bg-cyan-500/20 hover:bg-cyan-500/40 border-2 border-cyan-400 rounded-bl-3xl flex flex-col items-center justify-center transition cursor-pointer">
+                                    <span class="font-display font-bold text-2xl text-cyan-300">m</span>
+                                    <span class="text-[10px] text-cyan-200">Massa (kg)</span>
+                                </button>
+                                <button onclick="selectTriangleItem('a')" id="tri-a" class="w-28 h-20 bg-emerald-500/20 hover:bg-emerald-500/40 border-2 border-emerald-400 rounded-br-3xl flex flex-col items-center justify-center transition cursor-pointer">
+                                    <span class="font-display font-bold text-2xl text-emerald-300">a</span>
+                                    <span class="text-[10px] text-emerald-200">Percepatan (m/s²)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tri-info-box" class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200 max-w-lg mx-auto">
+                        Klik F, m, atau a pada segitiga di atas!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800 py-4 px-6 text-center text-xs text-slate-500">
+        <p>© 2026 Lab Maya Sains - Media Pembelajaran Interaktif Gaya & Gerak IPA SD Kelas 5–6.</p>
+    </footer>
+
+    <script>
+        /* Web Audio API Sound Effects Synthesizer */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'start') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(660, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+        }
+
+        // Global Toast Notification
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-900 border-emerald-500 text-emerald-200' :
+                            type === 'warning' ? 'bg-amber-900 border-amber-500 text-amber-200' :
+                            'bg-slate-900 border-cyan-500 text-cyan-200';
+
+            toast.className = `px-4 py-3 rounded-xl border shadow-xl text-xs font-semibold flex items-center space-x-2 transition-all transform translate-y-2 pointer-events-auto ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /* Navigation Management */
+        function switchSection(secId) {
+            playSound('click');
+            document.querySelectorAll('.section-block').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById('sec-' + secId);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-cyan-400', 'bg-slate-800');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeNav = document.getElementById('nav-' + secId);
+            if (activeNav) {
+                activeNav.classList.add('text-cyan-400', 'bg-slate-800');
+                activeNav.classList.remove('text-slate-400');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Trigger chart resizes if switching to exp tabs
+            if (secId === 'exp1' && chartExp1) chartExp1.resize();
+            if (secId === 'exp2' && chartExp2) chartExp2.resize();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        const appState = {
+            predictions: { exp1: null, exp2: null },
+            exp1History: [],
+            exp2History: [],
+            journal: {
+                q: '', pred: '', exp: '', data: '', conc: ''
+            }
+        };
+
+        function setPrediction(expKey, optIndex, btnEl) {
+            playSound('click');
+            appState.predictions[expKey] = optIndex;
+
+            const parent = btnEl.parentElement;
+            parent.querySelectorAll('.pred-opt').forEach(b => {
+                b.classList.remove('bg-cyan-900/60', 'border-cyan-400', 'bg-emerald-900/60', 'border-emerald-400');
+                b.classList.add('bg-slate-800/80', 'border-slate-700');
+            });
+
+            const activeBorder = expKey === 'exp1' ? 'border-cyan-400 bg-cyan-900/60' : 'border-emerald-400 bg-emerald-900/60';
+            btnEl.classList.remove('bg-slate-800/80', 'border-slate-700');
+            btnEl.classList.add(...activeBorder.split(' '));
+
+            const feedbackEl = document.getElementById(`${expKey}-pred-feedback`);
+            feedbackEl.classList.remove('hidden');
+
+            if (expKey === 'exp1') {
+                feedbackEl.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i> Prediksimu telah dicatat: <strong>${optIndex === 1 ? 'Benda bergerak lebih cepat' : 'Pilihanmu tersimpan'}</strong>. Sekarang jalankan percobaan untuk melihat bukti langsung!`;
+            } else {
+                feedbackEl.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i> Prediksimu telah dicatat! Mari kita buktikan dengan menaikkan massa benda di panel eksperimen.`;
+            }
+        }
+
+        let exp1State = { m: 2, F: 2, v0: 0, x: 0, v: 0, a: 1, t: 0, isRunning: false, animId: null };
+        let chartExp1 = null;
+
+        function initExp1Chart() {
+            const ctx = document.getElementById('chart-exp1').getContext('2d');
+            chartExp1 = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Percepatan a (m/s²)',
+                        data: [],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#38bdf8'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Gaya F (N)', color: '#94a3b8' }, ticks: { color: '#94a3b8' } },
+                        y: { title: { display: true, text: 'Percepatan (m/s²)', color: '#94a3b8' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+                    },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                }
+            });
+        }
+
+        function updateExp1Controls() {
+            const fVal = parseFloat(document.getElementById('exp1-force-input').value);
+            document.getElementById('exp1-slider-val').innerText = `${fVal} N`;
+            exp1State.F = fVal;
+            exp1State.a = exp1State.F / exp1State.m;
+            document.getElementById('exp1-read-f').innerText = `${exp1State.F} N`;
+            document.getElementById('exp1-read-a').innerText = `${exp1State.a.toFixed(1)} m/s²`;
+            drawExp1Canvas();
+        }
+
+        function drawExp1Canvas() {
+            const canvas = document.getElementById('canvas-exp1');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Track Line & Scale
+            const trackY = h - 40;
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(30, trackY);
+            ctx.lineTo(w - 30, trackY);
+            ctx.stroke();
+
+            // Scale Markings 0m to 5m
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px Inter, sans-serif';
+            const trackLen = w - 60;
+            for (let i = 0; i <= 5; i++) {
+                const markX = 30 + (i / 5) * trackLen;
+                ctx.fillRect(markX - 1, trackY, 2, 8);
+                ctx.fillText(`${i} m`, markX - 8, trackY + 22);
+            }
+
+            // Calculate Box Position (0 - 5m mapped to canvas)
+            const boxPosRatio = Math.min(exp1State.x / 5, 1);
+            const boxX = 30 + boxPosRatio * trackLen;
+            const boxY = trackY - 45;
+
+            // Draw Box
+            ctx.fillStyle = '#0284c7';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(boxX - 25, boxY, 50, 45, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Label on Box
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText(`📦 2 kg`, boxX, boxY + 26);
+
+            // Draw Force Push Arrow
+            if (exp1State.F > 0) {
+                const arrowLen = 15 + exp1State.F * 6;
+                ctx.fillStyle = '#f59e0b';
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 3;
+
+                // Push Arrow behind box
+                ctx.beginPath();
+                ctx.moveTo(boxX - 25 - arrowLen, boxY + 22);
+                ctx.lineTo(boxX - 27, boxY + 22);
+                ctx.stroke();
+
+                // Arrowhead
+                ctx.beginPath();
+                ctx.moveTo(boxX - 27, boxY + 22);
+                ctx.lineTo(boxX - 35, boxY + 16);
+                ctx.lineTo(boxX - 35, boxY + 28);
+                ctx.closePath();
+                ctx.fill();
+
+                // Arrow Label
+                ctx.font = 'bold 11px Inter';
+                ctx.fillText(`${exp1State.F} N`, boxX - 25 - arrowLen / 2, boxY + 14);
+            }
+        }
+
+        function runExp1Sim() {
+            if (exp1State.isRunning) return;
+            playSound('start');
+            exp1State.isRunning = true;
+            document.getElementById('btn-exp1-run').disabled = true;
+            document.getElementById('btn-exp1-run').classList.add('opacity-50');
+            document.getElementById('exp1-sim-status').innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-400 mr-1"></i> Bergerak...`;
+
+            let startTime = null;
+            const dt = 0.02; // physics step
+
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+
+                exp1State.t += dt;
+                exp1State.a = exp1State.F / exp1State.m;
+                exp1State.v = exp1State.v0 + exp1State.a * exp1State.t;
+                exp1State.x = exp1State.v0 * exp1State.t + 0.5 * exp1State.a * Math.pow(exp1State.t, 2);
+
+                // Update Readouts
+                document.getElementById('exp1-read-v').innerText = `${exp1State.v.toFixed(1)} m/s`;
+                document.getElementById('exp1-read-s').innerText = `${exp1State.x.toFixed(2)} m`;
+                document.getElementById('exp1-read-t').innerText = `${exp1State.t.toFixed(1)} s`;
+
+                drawExp1Canvas();
+
+                if (exp1State.x < 5 && exp1State.t < 10) {
+                    exp1State.animId = requestAnimationFrame(animate);
+                } else {
+                    // Experiment Completed
+                    exp1State.isRunning = false;
+                    document.getElementById('btn-exp1-run').disabled = false;
+                    document.getElementById('btn-exp1-run').classList.remove('opacity-50');
+                    document.getElementById('exp1-sim-status').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i>Selesai`;
+                    playSound('success');
+
+                    // Record Table Data
+                    recordExp1Data();
+                }
+            }
+
+            exp1State.animId = requestAnimationFrame(animate);
+        }
+
+        function resetExp1Sim() {
+            if (exp1State.animId) cancelAnimationFrame(exp1State.animId);
+            exp1State.isRunning = false;
+            exp1State.x = 0;
+            exp1State.v = 0;
+            exp1State.t = 0;
+            exp1State.a = exp1State.F / exp1State.m;
+
+            document.getElementById('exp1-read-v').innerText = `0.0 m/s`;
+            document.getElementById('exp1-read-s').innerText = `0.00 m`;
+            document.getElementById('exp1-read-t').innerText = `0.0 s`;
+            document.getElementById('btn-exp1-run').disabled = false;
+            document.getElementById('btn-exp1-run').classList.remove('opacity-50');
+            document.getElementById('exp1-sim-status').innerHTML = `<i class="fa-solid fa-circle text-[10px] text-cyan-400 mr-1"></i>Siap`;
+
+            drawExp1Canvas();
+        }
+
+        function recordExp1Data() {
+            const vAt3s = (exp1State.a * 3).toFixed(1);
+            const entry = {
+                run: appState.exp1History.length + 1,
+                m: exp1State.m,
+                F: exp1State.F,
+                a: exp1State.a.toFixed(1),
+                v3: `${vAt3s} m/s`
+            };
+            appState.exp1History.push(entry);
+
+            // Render Table
+            const tbody = document.getElementById('exp1-table-body');
+            tbody.innerHTML = appState.exp1History.map(row => `
+                <tr class="hover:bg-slate-800/50 transition">
+                    <td class="p-2.5 font-bold text-slate-300">#${row.run}</td>
+                    <td class="p-2.5 text-cyan-400">${row.m} kg</td>
+                    <td class="p-2.5 text-amber-400 font-bold">${row.F} N</td>
+                    <td class="p-2.5 text-emerald-400 font-bold">${row.a} m/s²</td>
+                    <td class="p-2.5 text-blue-400">${row.v3}</td>
+                </tr>
+            `).join('');
+
+            // Update Chart
+            chartExp1.data.labels.push(`${row.F} N`);
+            chartExp1.data.datasets[0].data.push(row.a);
+            chartExp1.update();
+
+            showToast(`Data Percobaan #${entry.run} berhasil ditambahkan ke tabel!`, 'success');
+        }
+
+        function checkExp1Analysis(isCorrectChoice) {
+            playSound('click');
+            const fb = document.getElementById('exp1-analysis-feedback');
+            fb.classList.remove('hidden');
+
+            if (isCorrectChoice) {
+                fb.className = "p-3 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-sm font-medium";
+                fb.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> <strong>BENAR SEKALI!</strong> Bukti percobaan membuktikan: Jika massa tetap, semakin besar gaya dorong yang diberikan, percepatannya semakin besar sehingga benda bergerak jauh lebih cepat.`;
+            } else {
+                fb.className = "p-3 rounded-xl bg-amber-950/80 border border-amber-500/50 text-amber-300 text-sm font-medium";
+                fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> Coba perhatikan kembali tabel data di atas! Saat gaya dinaikkan dari 2 N ke 8 N, angka percepatannya naik dari 1 m/s² menjadi 4 m/s².`;
+            }
+        }
+
+        let exp2State = { m: 1, F: 6, v0: 0, x: 0, v: 0, a: 6, t: 0, isRunning: false, animId: null };
+        let chartExp2 = null;
+
+        function initExp2Chart() {
+            const ctx = document.getElementById('chart-exp2').getContext('2d');
+            chartExp2 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Percepatan a (m/s²)',
+                        data: [],
+                        backgroundColor: '#10b981',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Massa Benda m (kg)', color: '#94a3b8' }, ticks: { color: '#94a3b8' } },
+                        y: { title: { display: true, text: 'Percepatan (m/s²)', color: '#94a3b8' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+                    },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                }
+            });
+        }
+
+        function updateExp2Controls() {
+            const mVal = parseFloat(document.getElementById('exp2-mass-input').value);
+            document.getElementById('exp2-slider-val').innerText = `${mVal} kg`;
+            exp2State.m = mVal;
+            exp2State.a = exp2State.F / exp2State.m;
+            document.getElementById('exp2-read-m').innerText = `${exp2State.m} kg`;
+            document.getElementById('exp2-read-a').innerText = `${exp2State.a.toFixed(1)} m/s²`;
+            drawExp2Canvas();
+        }
+
+        function drawExp2Canvas() {
+            const canvas = document.getElementById('canvas-exp2');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Track Line
+            const trackY = h - 40;
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(30, trackY);
+            ctx.lineTo(w - 30, trackY);
+            ctx.stroke();
+
+            // Scale
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px Inter';
+            const trackLen = w - 60;
+            for (let i = 0; i <= 5; i++) {
+                const markX = 30 + (i / 5) * trackLen;
+                ctx.fillRect(markX - 1, trackY, 2, 8);
+                ctx.fillText(`${i} m`, markX - 8, trackY + 22);
+            }
+
+            // Position calculation
+            const boxPosRatio = Math.min(exp2State.x / 5, 1);
+            const boxX = 30 + boxPosRatio * trackLen;
+
+            // Box dimension scales with mass!
+            const boxWidth = 40 + exp2State.m * 6;
+            const boxHeight = 35 + exp2State.m * 5;
+            const boxY = trackY - boxHeight;
+
+            // Draw Box
+            ctx.fillStyle = '#059669';
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(boxX - boxWidth / 2, boxY, boxWidth, boxHeight, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText(`📦 ${exp2State.m} kg`, boxX, boxY + boxHeight / 2 + 4);
+
+            // Force Arrow (fixed 6N)
+            const arrowLen = 15 + exp2State.F * 5;
+            ctx.fillStyle = '#f59e0b';
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 3;
+
+            ctx.beginPath();
+            ctx.moveTo(boxX - boxWidth / 2 - arrowLen, boxY + boxHeight / 2);
+            ctx.lineTo(boxX - boxWidth / 2 - 2, boxY + boxHeight / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(boxX - boxWidth / 2 - 2, boxY + boxHeight / 2);
+            ctx.lineTo(boxX - boxWidth / 2 - 10, boxY + boxHeight / 2 - 6);
+            ctx.lineTo(boxX - boxWidth / 2 - 10, boxY + boxHeight / 2 + 6);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function runExp2Sim() {
+            if (exp2State.isRunning) return;
+            playSound('start');
+            exp2State.isRunning = true;
+            document.getElementById('btn-exp2-run').disabled = true;
+            document.getElementById('btn-exp2-run').classList.add('opacity-50');
+            document.getElementById('exp2-sim-status').innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-400 mr-1"></i> Bergerak...`;
+
+            const dt = 0.02;
+
+            function animate() {
+                exp2State.t += dt;
+                exp2State.a = exp2State.F / exp2State.m;
+                exp2State.v = exp2State.v0 + exp2State.a * exp2State.t;
+                exp2State.x = exp2State.v0 * exp2State.t + 0.5 * exp2State.a * Math.pow(exp2State.t, 2);
+
+                document.getElementById('exp2-read-v').innerText = `${exp2State.v.toFixed(1)} m/s`;
+                document.getElementById('exp2-read-s').innerText = `${exp2State.x.toFixed(2)} m`;
+                document.getElementById('exp2-read-t').innerText = `${exp2State.t.toFixed(1)} s`;
+
+                drawExp2Canvas();
+
+                if (exp2State.x < 5 && exp2State.t < 10) {
+                    exp2State.animId = requestAnimationFrame(animate);
+                } else {
+                    exp2State.isRunning = false;
+                    document.getElementById('btn-exp2-run').disabled = false;
+                    document.getElementById('btn-exp2-run').classList.remove('opacity-50');
+                    document.getElementById('exp2-sim-status').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i>Selesai`;
+                    playSound('success');
+
+                    recordExp2Data();
+                }
+            }
+
+            exp2State.animId = requestAnimationFrame(animate);
+        }
+
+        function resetExp2Sim() {
+            if (exp2State.animId) cancelAnimationFrame(exp2State.animId);
+            exp2State.isRunning = false;
+            exp2State.x = 0;
+            exp2State.v = 0;
+            exp2State.t = 0;
+            exp2State.a = exp2State.F / exp2State.m;
+
+            document.getElementById('exp2-read-v').innerText = `0.0 m/s`;
+            document.getElementById('exp2-read-s').innerText = `0.00 m`;
+            document.getElementById('exp2-read-t').innerText = `0.0 s`;
+            document.getElementById('btn-exp2-run').disabled = false;
+            document.getElementById('btn-exp2-run').classList.remove('opacity-50');
+            document.getElementById('exp2-sim-status').innerHTML = `<i class="fa-solid fa-circle text-[10px] text-emerald-400 mr-1"></i>Siap`;
+
+            drawExp2Canvas();
+        }
+
+        function recordExp2Data() {
+            const entry = {
+                run: appState.exp2History.length + 1,
+                F: exp2State.F,
+                m: exp2State.m,
+                a: exp2State.a.toFixed(1)
+            };
+            appState.exp2History.push(entry);
+
+            const tbody = document.getElementById('exp2-table-body');
+            tbody.innerHTML = appState.exp2History.map(row => `
+                <tr class="hover:bg-slate-800/50 transition">
+                    <td class="p-2.5 font-bold text-slate-300">#${row.run}</td>
+                    <td class="p-2.5 text-amber-400 font-bold">${row.F} N</td>
+                    <td class="p-2.5 text-cyan-400 font-bold">${row.m} kg</td>
+                    <td class="p-2.5 text-emerald-400 font-bold">${row.a} m/s²</td>
+                </tr>
+            `).join('');
+
+            chartExp2.data.labels.push(`${row.m} kg`);
+            chartExp2.data.datasets[0].data.push(row.a);
+            chartExp2.update();
+
+            showToast(`Data Percobaan Massa #${entry.run} berhasil disimpan!`, 'success');
+        }
+
+        function checkExp2Analysis(isCorrectChoice) {
+            playSound('click');
+            const fb = document.getElementById('exp2-analysis-feedback');
+            fb.classList.remove('hidden');
+
+            if (isCorrectChoice) {
+                fb.className = "p-3 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-sm font-medium";
+                fb.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> <strong>TEPAT BANGET!</strong> Semakin berat massa benda (dengan gaya dorong sama), percepatannya semakin KECIL. Benda berat butuh usaha lebih untuk dipercepat!`;
+            } else {
+                fb.className = "p-3 rounded-xl bg-amber-950/80 border border-amber-500/50 text-amber-300 text-sm font-medium";
+                fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> Mari cermati grafik batang hijau! Terlihat bahwa saat massa bertambah dari 1 kg ke 5 kg, tinggi batang percepatan makin menurun.`;
+            }
+        }
+
+        let exp3State = {
+            aObj: { m: 1, F: 4, a: 4, x: 0, v: 0 },
+            bObj: { m: 4, F: 4, a: 1, x: 0, v: 0 },
+            t: 0,
+            isRunning: false,
+            animId: null
+        };
+
+        function drawExp3Canvas() {
+            const canvas = document.getElementById('canvas-exp3');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Track A (Top half)
+            const trackAY = h * 0.38;
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(30, trackAY);
+            ctx.lineTo(w - 30, trackAY);
+            ctx.stroke();
+
+            // Track B (Bottom half)
+            const trackBY = h * 0.82;
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(30, trackBY);
+            ctx.lineTo(w - 30, trackBY);
+            ctx.stroke();
+
+            const trackLen = w - 60;
+
+            // Draw Box A (1 kg)
+            const posXA = 30 + Math.min(exp3State.aObj.x / 5, 1) * trackLen;
+            const boxAY = trackAY - 35;
+            ctx.fillStyle = '#0284c7';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(posXA - 20, boxAY, 40, 35, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText(`A: 1kg`, posXA, boxAY + 20);
+
+            // Draw Box B (4 kg)
+            const posXB = 30 + Math.min(exp3State.bObj.x / 5, 1) * trackLen;
+            const boxBY = trackBY - 48;
+            ctx.fillStyle = '#7e22ce';
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(posXB - 30, boxBY, 60, 48, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Fredoka';
+            ctx.fillText(`B: 4kg`, posXB, boxBY + 28);
+
+            // Live Readouts inside Canvas Overlay
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'left';
+            ctx.fillText(`Lintasan A (1kg): s = ${exp3State.aObj.x.toFixed(2)}m | v = ${exp3State.aObj.v.toFixed(1)}m/s`, 30, 25);
+            ctx.fillText(`Lintasan B (4kg): s = ${exp3State.bObj.x.toFixed(2)}m | v = ${exp3State.bObj.v.toFixed(1)}m/s`, 30, h * 0.52);
+            ctx.fillText(`Waktu: ${exp3State.t.toFixed(1)} detik`, w - 140, 25);
+        }
+
+        function runExp3Sim() {
+            if (exp3State.isRunning) return;
+            playSound('start');
+            exp3State.isRunning = true;
+            document.getElementById('btn-exp3-run').disabled = true;
+
+            const dt = 0.02;
+
+            function animate() {
+                exp3State.t += dt;
+
+                // Box A
+                exp3State.aObj.v = exp3State.aObj.a * exp3State.t;
+                exp3State.aObj.x = 0.5 * exp3State.aObj.a * Math.pow(exp3State.t, 2);
+
+                // Box B
+                exp3State.bObj.v = exp3State.bObj.a * exp3State.t;
+                exp3State.bObj.x = 0.5 * exp3State.bObj.a * Math.pow(exp3State.t, 2);
+
+                drawExp3Canvas();
+
+                if (exp3State.aObj.x < 5 || exp3State.bObj.x < 5) {
+                    exp3State.animId = requestAnimationFrame(animate);
+                } else {
+                    exp3State.isRunning = false;
+                    document.getElementById('btn-exp3-run').disabled = false;
+                    playSound('success');
+                    showToast('Eksperimen perbandingan selesai!', 'info');
+                }
+            }
+
+            exp3State.animId = requestAnimationFrame(animate);
+        }
+
+        function resetExp3Sim() {
+            if (exp3State.animId) cancelAnimationFrame(exp3State.animId);
+            exp3State.isRunning = false;
+            exp3State.t = 0;
+            exp3State.aObj.x = 0; exp3State.aObj.v = 0;
+            exp3State.bObj.x = 0; exp3State.bObj.v = 0;
+            document.getElementById('btn-exp3-run').disabled = false;
+            drawExp3Canvas();
+        }
+
+        function saveExp3Reflection() {
+            const txt = document.getElementById('exp3-reflection-input').value;
+            if (!txt.trim()) {
+                showToast('Isi refleksimu terlebih dahulu!', 'warning');
+                return;
+            }
+            appState.journal.data += `\n[Refleksi Exp 3]: ${txt}`;
+            document.getElementById('jurnal-data').value = appState.journal.data;
+            showToast('Refleksi disimpan ke Jurnal Ilmuwan!', 'success');
+        }
+
+        let freeState = { m: 1, F: 4, v0: 0, a: 4, x: 0, v: 0, t: 0, isRunning: false, animId: null };
+
+        function updateFreeControls() {
+            freeState.m = parseFloat(document.getElementById('free-m-input').value);
+            freeState.F = parseFloat(document.getElementById('free-f-input').value);
+            freeState.a = freeState.m > 0 ? freeState.F / freeState.m : 0;
+
+            document.getElementById('free-m-val').innerText = `${freeState.m} kg`;
+            document.getElementById('free-f-val').innerText = `${freeState.F} N`;
+
+            document.getElementById('free-read-m').innerText = `${freeState.m} kg`;
+            document.getElementById('free-read-f').innerText = `${freeState.F} N`;
+            document.getElementById('free-read-a').innerText = `${freeState.a.toFixed(1)} m/s²`;
+
+            drawFreeCanvas();
+        }
+
+        function setFreeV0(val, btnEl) {
+            playSound('click');
+            freeState.v0 = val;
+            document.getElementById('free-read-v0').innerText = `${val} m/s`;
+
+            document.querySelectorAll('.free-v0-btn').forEach(b => {
+                b.className = "free-v0-btn p-2 text-xs rounded-xl bg-slate-800 text-slate-300 font-medium border border-slate-700";
+            });
+            btnEl.className = "free-v0-btn p-2 text-xs rounded-xl bg-blue-600 text-white font-bold border border-blue-400";
+
+            drawFreeCanvas();
+        }
+
+        function drawFreeCanvas() {
+            const canvas = document.getElementById('canvas-free');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const trackY = h - 40;
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(30, trackY);
+            ctx.lineTo(w - 30, trackY);
+            ctx.stroke();
+
+            const trackLen = w - 60;
+            for (let i = 0; i <= 5; i++) {
+                const markX = 30 + (i / 5) * trackLen;
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(markX - 1, trackY, 2, 8);
+                ctx.font = '11px Inter';
+                ctx.fillText(`${i} m`, markX - 8, trackY + 22);
+            }
+
+            const boxPosRatio = Math.min(freeState.x / 5, 1);
+            const boxX = 30 + boxPosRatio * trackLen;
+
+            const boxWidth = 35 + freeState.m * 6;
+            const boxHeight = 35 + freeState.m * 5;
+            const boxY = trackY - boxHeight;
+
+            ctx.fillStyle = '#2563eb';
+            ctx.strokeStyle = '#60a5fa';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(boxX - boxWidth / 2, boxY, boxWidth, boxHeight, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText(`📦 ${freeState.m} kg`, boxX, boxY + boxHeight / 2 + 4);
+        }
+
+        function runFreeSim() {
+            if (freeState.isRunning) return;
+            playSound('start');
+            freeState.isRunning = true;
+            document.getElementById('btn-free-run').disabled = true;
+
+            const dt = 0.02;
+
+            function animate() {
+                freeState.t += dt;
+                freeState.a = freeState.F / freeState.m;
+                freeState.v = freeState.v0 + freeState.a * freeState.t;
+                freeState.x = freeState.v0 * freeState.t + 0.5 * freeState.a * Math.pow(freeState.t, 2);
+
+                document.getElementById('free-read-v').innerText = `${freeState.v.toFixed(1)} m/s`;
+                document.getElementById('free-read-t').innerText = `${freeState.t.toFixed(1)} s`;
+
+                drawFreeCanvas();
+
+                // Check Challenge Victory Condition:
+                // Target: m = 4 kg, v >= 8 m/s, t < 4 s
+                if (freeState.m === 4 && freeState.v >= 8.0 && freeState.t < 4.0) {
+                    document.getElementById('challenge-success-card').classList.remove('hidden');
+                    playSound('success');
+                }
+
+                if (freeState.x < 5 && freeState.t < 10) {
+                    freeState.animId = requestAnimationFrame(animate);
+                } else {
+                    freeState.isRunning = false;
+                    document.getElementById('btn-free-run').disabled = false;
+                }
+            }
+
+            freeState.animId = requestAnimationFrame(animate);
+        }
+
+        function resetFreeSim() {
+            if (freeState.animId) cancelAnimationFrame(freeState.animId);
+            freeState.isRunning = false;
+            freeState.x = 0; freeState.v = 0; freeState.t = 0;
+            document.getElementById('free-read-v').innerText = `0.0 m/s`;
+            document.getElementById('free-read-t').innerText = `0.0 s`;
+            document.getElementById('btn-free-run').disabled = false;
+            drawFreeCanvas();
+        }
+
+        function saveChallengeToJournal() {
+            const combo = document.getElementById('free-ans-combo').value;
+            const reason = document.getElementById('free-ans-reason').value;
+
+            appState.journal.conc += `\n[Tantangan Lab Bebas Berhasil!]: Kombinasi (${combo}). Alasan: (${reason})`;
+            document.getElementById('jurnal-conc').value = appState.journal.conc;
+            showToast('Pencapaian tantangan disimpan ke Jurnal!', 'success');
+        }
+
+        let misiState = { a: { x: 0, v: 0 }, b: { x: 0, v: 0 }, t: 0, isRunning: false, animId: null };
+
+        function drawMisiCanvas() {
+            const canvas = document.getElementById('canvas-misi');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Track 1: Cart A (Empty 1kg)
+            const y1 = h * 0.35;
+            ctx.strokeStyle = '#f97316';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(30, y1); ctx.lineTo(w - 30, y1); ctx.stroke();
+
+            // Track 2: Cart B (Full 3kg)
+            const y2 = h * 0.78;
+            ctx.strokeStyle = '#eab308';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(30, y2); ctx.lineTo(w - 30, y2); ctx.stroke();
+
+            const trackLen = w - 60;
+
+            // Draw Cart A
+            const xA = 30 + Math.min(misiState.a.x / 5, 1) * trackLen;
+            ctx.fillStyle = '#f97316';
+            ctx.fillRect(xA - 25, y1 - 25, 50, 25);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText(`🛒 A (Kosong 1kg)`, xA, y1 - 10);
+
+            // Draw Cart B
+            const xB = 30 + Math.min(misiState.b.x / 5, 1) * trackLen;
+            ctx.fillStyle = '#ca8a04';
+            ctx.fillRect(xB - 30, y2 - 35, 60, 35);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(`🛒 B (Buku 3kg)`, xB, y2 - 12);
+        }
+
+        function runMisiSim() {
+            if (misiState.isRunning) return;
+            playSound('start');
+            misiState.isRunning = true;
+            document.getElementById('btn-misi-run').disabled = true;
+
+            const dt = 0.02;
+            const F = 5; // Fixed 5N
+            const aA = F / 1; // 5 m/s2
+            const aB = F / 3; // 1.67 m/s2
+
+            function animate() {
+                misiState.t += dt;
+
+                misiState.a.x = 0.5 * aA * Math.pow(misiState.t, 2);
+                misiState.b.x = 0.5 * aB * Math.pow(misiState.t, 2);
+
+                drawMisiCanvas();
+
+                if (misiState.a.x < 5 || misiState.b.x < 5) {
+                    misiState.animId = requestAnimationFrame(animate);
+                } else {
+                    misiState.isRunning = false;
+                    document.getElementById('btn-misi-run').disabled = false;
+                    playSound('success');
+                }
+            }
+
+            misiState.animId = requestAnimationFrame(animate);
+        }
+
+        function resetMisiSim() {
+            if (misiState.animId) cancelAnimationFrame(misiState.animId);
+            misiState.isRunning = false;
+            misiState.t = 0; misiState.a.x = 0; misiState.b.x = 0;
+            document.getElementById('btn-misi-run').disabled = false;
+            drawMisiCanvas();
+        }
+
+        function saveMisiToJournal() {
+            const pred = document.getElementById('misi-pred-select').value;
+            const conc = document.getElementById('misi-conclusion-text').value;
+
+            appState.journal.conc += `\n[Misi Mendorong Gerobak]: Prediksi pilihan (${pred}). Kesimpulan: ${conc}`;
+            document.getElementById('jurnal-conc').value = appState.journal.conc;
+            showToast('Hasil Misi Sains disimpan ke Jurnal!', 'success');
+        }
+
+        function saveJournalLocal() {
+            appState.journal.name = document.getElementById('journal-name').value;
+            appState.journal.q = document.getElementById('jurnal-q').value;
+            appState.journal.pred = document.getElementById('jurnal-pred').value;
+            appState.journal.exp = document.getElementById('jurnal-exp').value;
+            appState.journal.data = document.getElementById('jurnal-data').value;
+            appState.journal.conc = document.getElementById('jurnal-conc').value;
+
+            localStorage.setItem('lab_maya_journal', JSON.stringify(appState.journal));
+            playSound('success');
+            showToast('Jurnal Ilmuwan berhasil disimpan ke browser!', 'success');
+        }
+
+        function exportJournal() {
+            window.print();
+        }
+
+        function selectTriangleItem(type) {
+            playSound('click');
+            const box = document.getElementById('tri-info-box');
+            if (type === 'F') {
+                box.innerHTML = `<strong class="text-amber-400">F = Gaya (Force)</strong>: Diukur dalam Newton (N). Gaya adalah besarnya dorongan atau tarikan yang diberikan pada benda.`;
+            } else if (type === 'm') {
+                box.innerHTML = `<strong class="text-cyan-400">m = Massa (Mass)</strong>: Diukur dalam kilogram (kg). Menunjukkan seberapa berat atau banyaknya materi benda. Semakin besar massa, benda makin inersia (sulit dipercepat).`;
+            } else if (type === 'a') {
+                box.innerHTML = `<strong class="text-emerald-400">a = Percepatan (Acceleration)</strong>: Diukur dalam m/s². Menunjukkan seberapa cepat perubahan kecepatan benda setiap detiknya.`;
+            }
+        }
+
+        window.onload = function() {
+            initExp1Chart();
+            initExp2Chart();
+
+            drawExp1Canvas();
+            drawExp2Canvas();
+            drawExp3Canvas();
+            drawFreeCanvas();
+            drawMisiCanvas();
+
+            // Load saved journal if exists
+            const saved = localStorage.getItem('lab_maya_journal');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.name) document.getElementById('journal-name').value = parsed.name;
+                    if (parsed.q) document.getElementById('jurnal-q').value = parsed.q;
+                    if (parsed.pred) document.getElementById('jurnal-pred').value = parsed.pred;
+                    if (parsed.exp) document.getElementById('jurnal-exp').value = parsed.exp;
+                    if (parsed.data) document.getElementById('jurnal-data').value = parsed.data;
+                    if (parsed.conc) document.getElementById('jurnal-conc').value = parsed.conc;
+                } catch(e) {}
+            }
+
+            // Window resize handler for dynamic canvas redraws
+            window.addEventListener('resize', () => {
+                drawExp1Canvas();
+                drawExp2Canvas();
+                drawExp3Canvas();
+                drawFreeCanvas();
+                drawMisiCanvas();
+            });
+        };
+    </script>
+</body>
+</html>
